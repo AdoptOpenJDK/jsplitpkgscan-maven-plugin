@@ -19,27 +19,31 @@
         <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
     </properties>
 
+    <prerequisites>
+        <maven>3.5.2</maven>
+    </prerequisites>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>2.0</version>
+            <version>3.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.2</version>
+            <version>3.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.8</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -47,8 +51,9 @@
     <build>
         <plugins>
             <!-- TODO This is just for testing purposes, remove once done
-                 We've bound the execution of this plugin to the test lifecycle
-                 phase so if a user types `mvn test` this plugin will execute
+                 We've bound the execution of this plugin to the verify lifecycle
+                 phase so if a user types `mvn verify` (or install, or deploy)
+                 this plugin will execute
               -->
             <plugin>
                 <groupId>org.adoptopenjdk.maven.plugins</groupId>
@@ -58,17 +63,44 @@
                     <execution>
                         <phase>verify</phase>
                         <goals>
-                            <goal>touch</goal>
+                            <goal>jsplitpkgscan</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.5</version>
                 <configuration>
-                    <goalPrefix>jsplitpkgscan-maven-plugin</goalPrefix>
+                    <goalPrefix>jsplitpkgscan</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
                 <executions>
@@ -86,6 +118,23 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+            </plugin>
+
         </plugins>
     </build>
     <profiles>
@@ -97,7 +146,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
-                        <version>1.7</version>
+                        <version>3.0.1</version>
                         <configuration>
                             <debug>true</debug>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
