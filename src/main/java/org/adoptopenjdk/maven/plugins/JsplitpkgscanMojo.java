@@ -15,11 +15,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifact;
 
+import javax.tools.Tool;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 
 /**
@@ -47,39 +51,29 @@ public class JsplitpkgscanMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
-        // TODO We still create a text file until we can get jsplitpkgscan working correctly.
-        createTouchTxtFile();
-
         // Run jsplitpkgscan with the default arguments
-        // TODO figure out how to read in parameters set by the plugin configuraton
-        // runJsplitpkgscan()
-    }
+        for (Tool tool : ServiceLoader.load(Tool.class)) {
+            if ("jsplitpgkscan".equals(tool.toString())) {
+                List<String> artifactJars = new ArrayList<>();
+                //todo: add filter possibility to only include certain scopes
+                collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()));
 
-    private void createTouchTxtFile() throws MojoExecutionException {
-        File touchFile = outputDirectory;
-        if (!touchFile.exists()) {
-            boolean created = touchFile.mkdirs();
-            if (created) {
-                System.out.println(touchFile.getAbsolutePath() + " was created.");
+                System.out.println(artifactJars);
+
+
+                //todo: parse output to create errors
+                tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
             }
-        }
-
-        File touch = new File(touchFile, "touch.txt");
-        try (FileWriter fileWriter = new FileWriter(touch); PrintWriter printWriter = new PrintWriter(fileWriter)) {
-            collectArtifacts(artifact -> printWriter.println(artifact.getFile()));
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error creating file " + touch, e);
         }
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer) {
-
         // The project's own artifact
         Artifact projectArtifact = project.getArtifact();
         artifactConsumer.accept(projectArtifact);
 
         // The rest of the project's artifacts
-        project.getArtifacts().forEach(artifactConsumer);
+        project.getArtifacts().forEach(artifactConsumer); //todo: what kind of dependencies are here
 
         // the project dependency artifacts
         ArtifactRepository localRepository = session.getLocalRepository();
