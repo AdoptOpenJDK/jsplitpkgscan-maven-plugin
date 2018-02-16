@@ -73,10 +73,14 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer) {
-        // the projects own artifact
-        artifactConsumer.accept(project.getArtifact());
-        // the projects artifacts
+
+        // The project's own artifact
+        Artifact projectArtifact = project.getArtifact();
+        artifactConsumer.accept(projectArtifact);
+
+        // The rest of the project's artifacts
         project.getArtifacts().forEach(artifactConsumer);
+
         // the project dependency artifacts
         ArtifactRepository localRepository = session.getLocalRepository();
         for (Dependency dependency : project.getDependencies()) {
