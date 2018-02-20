@@ -23,8 +23,7 @@ import java.util.function.Consumer;
 /**
  * Goal which:
  * <p>
- * 1. touches a timestamp file. TODO remove this feature
- * 2. TODO Runs jsplitpkgscan
+ * TODO Runs jsplitpkgscan for all artifacts
  */
 @Mojo(name = "jsplitpkgscan", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class JsplitpkgscanMojo extends AbstractMojo {
@@ -39,26 +38,27 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
-     * Default execute method for Maven plugins.
+     * Execute jsplitpgkscan tool for the projects artifact against all it's dependencies.
      *
      * @throws MojoExecutionException
      */
     @Override
     public void execute() throws MojoExecutionException {
-        // Run jsplitpkgscan with the default arguments
-        for (Tool tool : ServiceLoader.load(Tool.class)) {
-            if ("jsplitpgkscan".equals(tool.toString())) {
-                List<String> artifactJars = new ArrayList<>();
-                //todo: add filter possibility to only include certain scopes
-                collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()));
+        ServiceLoader.load(Tool.class).stream()
+                .map(toolProvider -> toolProvider.get())
+                .filter(tool -> "jsplitpgkscan".equals(tool.toString()))
+                .findFirst().ifPresent(this::runJsplitpkgscan);
+    }
 
-                System.out.println(artifactJars);
+    private void runJsplitpkgscan(Tool tool) {
+        List<String> artifactJars = new ArrayList<>();
+        //todo: add filter possibility to only include certain scopes
+        collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()));
 
+        getLog().debug("Artifacts being processed: " + artifactJars);
 
-                //todo: parse output to create errors
-                tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
-            }
-        }
+        //todo: parse output to create errors
+        tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer) {
