@@ -18,7 +18,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Goal which:
@@ -51,9 +53,13 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     }
 
     private void runJsplitpkgscan(Tool tool) {
-        List<String> artifactJars = new ArrayList<>();
+        Set<String> checkedScopes = Set.of("compile", "runtime");
+
         //todo: add filter possibility to only include certain scopes
-        collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()));
+        Predicate<Artifact> filterPredicate = artifact -> checkedScopes.contains(artifact.getScope());
+
+        List<String> artifactJars = new ArrayList<>();
+        collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()), filterPredicate);
 
         getLog().debug("Artifacts being processed: " + artifactJars);
 
@@ -61,19 +67,20 @@ public class JsplitpkgscanMojo extends AbstractMojo {
         tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
     }
 
-    private void collectArtifacts(Consumer<Artifact> artifactConsumer) {
+    private void collectArtifacts(Consumer<Artifact> artifactConsumer, Predicate<Artifact> filterPredicate) {
         // The project's own artifact
         Artifact projectArtifact = project.getArtifact();
         artifactConsumer.accept(projectArtifact);
 
         // The rest of the project's artifacts
-        project.getArtifacts().forEach(artifactConsumer); //todo: what kind of dependencies are here
+        project.getArtifacts().stream().filter(filterPredicate).forEach(artifactConsumer);
 
         // the project dependency artifacts
         ArtifactRepository localRepository = session.getLocalRepository();
-        for (Dependency dependency : project.getDependencies()) {
-            artifactConsumer.accept(localRepository.find(createDefaultArtifact(dependency)));
-        }
+        project.getDependencies().stream()
+                .map(dependency -> localRepository.find(createDefaultArtifact(dependency)))
+                .filter(filterPredicate)
+                .forEach(artifactConsumer);
     }
 
     private static Artifact createDefaultArtifact(Dependency dep) {
