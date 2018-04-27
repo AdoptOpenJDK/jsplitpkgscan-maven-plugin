@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mavenVersion>3.5.2</mavenVersion>
+        <mavenVersion>3.5.3</mavenVersion>
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
         <maven.compiler.testSource>9</maven.compiler.testSource>
@@ -22,7 +22,7 @@
     </properties>
 
     <prerequisites>
-        <maven>3.5.2</maven>
+        <maven>${mavenVersion}</maven>
     </prerequisites>
 
     <dependencies>
@@ -30,6 +30,12 @@
             <groupId>org.adoptopenjdk</groupId>
             <artifactId>jsplitpkgscan</artifactId>
             <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-compat</artifactId>
+            <version>${mavenVersion}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -67,6 +73,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.13.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

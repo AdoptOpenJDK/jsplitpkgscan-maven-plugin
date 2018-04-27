@@ -2,6 +2,7 @@ package org.adoptopenjdk.maven.plugins;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
+import javax.tools.Tool;
 import java.io.File;
 
 public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
@@ -28,13 +29,14 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
      */
     public void testSomething()
             throws Exception {
-        File pom = getTestFile("src/test/resources/unit/project-to-test/pom.xml");
+        File pom = getTestFile("src/test/resources/unit/jsplitpkgscan-maven-plugin/pom.xml");
         assertNotNull(pom);
         assertTrue(pom.exists());
 
-        JsplitpkgscanMojo jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("verify", pom);
-        assertNotNull(jsplitpkgscanMojo);
-        jsplitpkgscanMojo.execute();
+        JsplitpkgscanMojo jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("jsplitpkgscan", pom);
 
+        Tool tool = null;
+
+//        jsplitpkgscanMojo.runJsplitpkgscan(tool);
     }
 }

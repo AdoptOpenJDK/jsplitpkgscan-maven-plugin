@@ -17,6 +17,7 @@ import javax.tools.Tool;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -52,7 +53,7 @@ public class JsplitpkgscanMojo extends AbstractMojo {
                 .findFirst().ifPresent(this::runJsplitpkgscan);
     }
 
-    private void runJsplitpkgscan(Tool tool) {
+    void runJsplitpkgscan(Tool tool) {
         Set<String> checkedScopes = Set.of("compile", "runtime");
 
         //todo: add filter possibility to only include certain scopes
