@@ -28,21 +28,20 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
     /**
      * @throws Exception if any
      */
-    public void testSomething()
+    public void testToolInvocation_with_project_artifact_only()
             throws Exception {
         File pom = getTestFile("src/test/resources/unit/jsplitpkgscan-maven-plugin/pom.xml");
         assertNotNull(pom);
         assertTrue(pom.exists());
 
         JsplitpkgscanMojo jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("jsplitpkgscan", pom);
-
         assertNotNull(jsplitpkgscanMojo);
+        String projectArtifact = jsplitpkgscanMojo.project.getArtifact().getFile().getAbsolutePath();
 
         Tool tool = Mockito.mock(Tool.class);
 
-
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
 
-
+        Mockito.verify(tool).run(System.in, System.out, System.err, projectArtifact);
     }
 }

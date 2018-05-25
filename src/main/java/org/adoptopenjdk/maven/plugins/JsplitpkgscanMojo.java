@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 public class JsplitpkgscanMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
+    protected MavenProject project;
 
     @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
     protected ArtifactRepository localRepository;
