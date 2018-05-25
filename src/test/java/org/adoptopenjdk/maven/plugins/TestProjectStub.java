@@ -1,7 +1,11 @@
 package org.adoptopenjdk.maven.plugins;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
+import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.testing.stubs.ArtifactStub;
@@ -10,6 +14,8 @@ import org.apache.maven.shared.utils.ReaderFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +70,12 @@ public class TestProjectStub
         artifact.setType("jar");
         artifact.setFile(new File("main-artifact.jar"));
         setArtifact(artifact);
+
+
+        Dependency dependency = new Dependency();
+
+
+        setDependencies(Arrays.asList(dependency));
     }
 
     @Override
@@ -71,6 +83,12 @@ public class TestProjectStub
         //TODO simulate remaining artifacts later
         return super.getArtifacts();
     }
+
+    @Override
+    public List<ArtifactRepository> getRemoteArtifactRepositories() {
+        ArtifactRepository repository = new DefaultArtifactRepository( "central", "http://repo.maven.apache.org/maven2",
+                new DefaultRepositoryLayout() );
+        return Collections.singletonList( repository );    }
 
     /** {@inheritDoc} */
     public File getBasedir()

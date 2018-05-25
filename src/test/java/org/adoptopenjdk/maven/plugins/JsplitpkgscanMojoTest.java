@@ -35,11 +35,14 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         assertTrue(pom.exists());
 
         JsplitpkgscanMojo jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("jsplitpkgscan", pom);
+
         assertNotNull(jsplitpkgscanMojo);
 
         Tool tool = Mockito.mock(Tool.class);
 
 
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
+
+
     }
 }
