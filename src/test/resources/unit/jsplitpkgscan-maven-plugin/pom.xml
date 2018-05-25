@@ -33,10 +33,9 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <project implementation="org.adoptopenjdk.maven.plugins.TestProjectStub"/>
                     <outputDirectory>target/test-harness/jsplitpkgscan-maven-plugin</outputDirectory>
                 </configuration>
-<!--
--->
             </plugin>
         </plugins>
     </build>

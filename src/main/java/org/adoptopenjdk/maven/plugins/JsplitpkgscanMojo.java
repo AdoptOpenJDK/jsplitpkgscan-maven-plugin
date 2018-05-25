@@ -34,8 +34,8 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter(defaultValue = "${session}", readonly = true, required = true)
-    private MavenSession session;
+    @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
+    protected ArtifactRepository localRepository;
 
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
     private File outputDirectory;
@@ -77,7 +77,6 @@ public class JsplitpkgscanMojo extends AbstractMojo {
         project.getArtifacts().stream().filter(filterPredicate).forEach(artifactConsumer);
 
         // the project dependency artifacts
-        ArtifactRepository localRepository = session.getLocalRepository();
         project.getDependencies().stream()
                 .map(dependency -> localRepository.find(createDefaultArtifact(dependency)))
                 .filter(filterPredicate)

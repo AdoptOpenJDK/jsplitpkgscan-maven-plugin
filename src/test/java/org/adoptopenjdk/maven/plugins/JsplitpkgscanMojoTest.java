@@ -1,6 +1,7 @@
 package org.adoptopenjdk.maven.plugins;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.mockito.Mockito;
 
 import javax.tools.Tool;
 import java.io.File;
@@ -34,9 +35,11 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         assertTrue(pom.exists());
 
         JsplitpkgscanMojo jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("jsplitpkgscan", pom);
+        assertNotNull(jsplitpkgscanMojo);
 
-        Tool tool = null;
+        Tool tool = Mockito.mock(Tool.class);
 
-//        jsplitpkgscanMojo.runJsplitpkgscan(tool);
+
+        jsplitpkgscanMojo.runJsplitpkgscan(tool);
     }
 }
