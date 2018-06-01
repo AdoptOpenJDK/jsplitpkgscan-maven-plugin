@@ -83,13 +83,13 @@ public class JsplitpkgscanMojo extends AbstractMojo {
                 .forEach(artifactConsumer);
     }
 
-    private static Artifact createDefaultArtifact(Dependency dep) {
-        return new DefaultArtifact(dep.getGroupId(),
-                dep.getArtifactId(),
-                dep.getVersion(),
-                dep.getScope(),
-                dep.getType(),
-                dep.getClassifier(),
-                new DefaultArtifactHandler(dep.getType()));
+    private static Artifact createDefaultArtifact(Dependency dependency) {
+        return new DefaultArtifact(dependency.getGroupId(),
+                dependency.getArtifactId(),
+                dependency.getVersion(),
+                dependency.getScope(),
+                dependency.getType(),
+                dependency.getClassifier(),
+                new DefaultArtifactHandler(dependency.getType()));
     }
 }
