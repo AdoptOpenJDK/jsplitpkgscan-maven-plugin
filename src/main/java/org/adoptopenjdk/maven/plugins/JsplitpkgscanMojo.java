@@ -14,6 +14,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import javax.tools.Tool;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +66,14 @@ public class JsplitpkgscanMojo extends AbstractMojo {
 
         getLog().debug("Artifacts being processed: " + artifactJars);
 
+        ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        tool.run(in, out, err, artifactJars.toArray(new String[0]));
+
         //todo: parse output to create errors
-        tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
+        getLog().warn("out: " + out.toString());
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer, Predicate<Artifact> filterPredicate) {

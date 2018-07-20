@@ -4,11 +4,15 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.ArtifactStub;
+import org.mockito.ArgumentMatcher;
 
 import static org.mockito.Mockito.*;
 
 import javax.tools.Tool;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +49,12 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         verify(tool).run(any(), any(), any(), endsWith("main-artifact.jar"));
     }
 
+    public void testToolInvocation_with_project_artifact_only_having_output() {
+        when(tool.run(any(), argThat(new OutputStreamMatcher()), any(), endsWith("main-artifact.jar"))).thenReturn(0);
+
+        jsplitpkgscanMojo.runJsplitpkgscan(tool);
+    }
+
     public void testToolInvocation_with_project_artifact_only_and_dependencies() {
         List<Dependency> dependencies = jsplitpkgscanMojo.project.getDependencies();
         dependencies.add(createDependency("compile"));
@@ -64,6 +74,20 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
 
         verify(tool).run(any(), any(), any(), endsWith("main-artifact.jar"), endsWith("additional-one.jar"), endsWith("additional-two.jar"));
+    }
+
+    static class OutputStreamMatcher implements ArgumentMatcher<OutputStream> {
+        @Override
+        public boolean matches(OutputStream outputStream) {
+            try {
+                File outFile = getTestFile("src/test/resources/jsplitpkgscan.out");
+                Files.copy(outFile.toPath(), outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
     }
 
     private static ArtifactStub createArtifact(String artifactId, String type) {
