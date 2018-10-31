@@ -1,5 +1,8 @@
 package org.adoptopenjdk.maven.plugins;
 
+import java.text.ChoiceFormat;
+import java.text.MessageFormat;
+
 class ModuleDetail {
     private final int entryCount;
     private final String uri;
@@ -19,7 +22,8 @@ class ModuleDetail {
 
     @Override
     public String toString() {
-        return entryCount + " " + uri;
+        MessageFormat form = new MessageFormat("{0} ({1,choice,0#0 classes|1#1 class|1<{1,number,integer} classes} in that package)");
+        return form.format(new Object[] {uri, Integer.valueOf(entryCount)} );
     }
 
     @Override

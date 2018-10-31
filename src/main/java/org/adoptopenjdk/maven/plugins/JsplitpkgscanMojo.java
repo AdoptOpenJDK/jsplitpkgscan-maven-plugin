@@ -17,6 +17,7 @@ import javax.tools.Tool;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
-    @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
+    @Parameter(defaultValue = "${localRepository}", readonly = true, required = true)
     protected ArtifactRepository localRepository;
 
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
@@ -72,8 +73,18 @@ public class JsplitpkgscanMojo extends AbstractMojo {
 
         tool.run(in, out, err, artifactJars.toArray(new String[0]));
 
-        //todo: parse output to create errors
-        getLog().warn("out: " + out.toString());
+        OutputParser parser = new OutputParser(this::onPackage);
+        try {
+            parser.parse(out.toByteArray());
+        } catch (IOException parseException) {
+            getLog().error("Unable to parse tool output", parseException);
+        }
+    }
+
+    private void onPackage(String packageName, Set<ModuleDetail> moduleDetails) {
+        if (moduleDetails.size() > 1) {
+            getLog().warn("Split package '" + packageName + "' found: " + moduleDetails);
+        }
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer, Predicate<Artifact> filterPredicate) {

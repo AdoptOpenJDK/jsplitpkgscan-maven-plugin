@@ -1,14 +1,14 @@
 - Split packages:
-CH.obj.Application.Base.Applic
-     19  file:/CH.obj.Application.jar
-      5  file:/CH.obj.Core.jar
-CH.obj.Application.Base.General
-     24  file:/CH.obj.Application.jar
-      1  file:/CH.obj.di.jar
+org.adoptopenjdk.app
+     19  file:/org.adoptopenjdk.app.jar
+      5  file:/org.adoptopenjdk.core.jar
+org.adoptopenjdk.base
+     24  file:/org.adoptopenjdk.app.jar
+      1  file:/org.adoptopenjdk.util.jar
       2  file:/main-artifact.jar
-CH.obj.Application.Base.Mandant
-     12  file:/CH.obj.Application.jar
-      1  file:/CH.obj.Core.jar
-CH.obj.Application.Base.Organisation
-     25  file:/CH.obj.Application.jar
-      3  file:/CH.obj.Core.jar
+org.adoptopenjdk.app.util
+     12  file:/org.adoptopenjdk.app.jar
+      1  file:/org.adoptopenjdk.util.jar
+org.adoptopenjdk.model
+     25  file:/org.adoptopenjdk.app.jar
+      3  file:/org.adoptopenjdk.model.jar
