@@ -1,5 +1,6 @@
 package org.adoptopenjdk.maven.plugins;
 
+import junit.framework.AssertionFailedError;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -20,27 +21,15 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
     private Tool tool;
     private JsplitpkgscanMojo jsplitpkgscanMojo;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected void setUp()
             throws Exception {
-        // required
         super.setUp();
         tool = mock(Tool.class);
         File pom = getTestFile("src/test/resources/unit/jsplitpkgscan-maven-plugin/pom.xml");
         assertNotNull(pom);
         assertTrue(pom.exists());
         jsplitpkgscanMojo = (JsplitpkgscanMojo) lookupMojo("jsplitpkgscan", pom);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void tearDown()
-            throws Exception {
-        // required
-        super.tearDown();
     }
 
     public void testToolInvocation_with_project_artifact_only() {
@@ -83,8 +72,7 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
                 File outFile = getTestFile("src/test/resources/jsplitpkgscan.out");
                 Files.copy(outFile.toPath(), outputStream);
             } catch (IOException e) {
-                e.printStackTrace();
-                return false;
+                throw new AssertionError(e);
             }
             return true;
         }

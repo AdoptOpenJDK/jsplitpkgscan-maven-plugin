@@ -35,9 +35,9 @@ public class OutputParserTest {
         OutputParser parser = new OutputParser(consumer);
 
         consumer.accept("org.adoptopenjdk.app", setOf(new ModuleDetail(19, "file:/org.adoptopenjdk.app.jar"), new ModuleDetail(5, "file:/org.adoptopenjdk.core.jar")));
-        consumer.accept("org.adoptopenjdk.base", setOf(new ModuleDetail(24,"file:/org.adoptopenjdk.app.jar"), new ModuleDetail(2,"file:/main-artifact.jar"), new ModuleDetail(1,"file:/org.adoptopenjdk.util.jar")));
-        consumer.accept("org.adoptopenjdk.app.util", setOf(new ModuleDetail(12,"file:/org.adoptopenjdk.app.jar"), new ModuleDetail(1,"file:/org.adoptopenjdk.util.jar")));
-        consumer.accept("org.adoptopenjdk.model", setOf(new ModuleDetail(25,"file:/org.adoptopenjdk.app.jar"), new ModuleDetail(3,"file:/org.adoptopenjdk.model.jar")));
+        consumer.accept("org.adoptopenjdk.base", setOf(new ModuleDetail(24, "file:/org.adoptopenjdk.app.jar"), new ModuleDetail(2, "file:/main-artifact.jar"), new ModuleDetail(1, "file:/org.adoptopenjdk.util.jar")));
+        consumer.accept("org.adoptopenjdk.app.util", setOf(new ModuleDetail(12, "file:/org.adoptopenjdk.app.jar"), new ModuleDetail(1, "file:/org.adoptopenjdk.util.jar")));
+        consumer.accept("org.adoptopenjdk.model", setOf(new ModuleDetail(25, "file:/org.adoptopenjdk.app.jar"), new ModuleDetail(3, "file:/org.adoptopenjdk.model.jar")));
 
         replay(consumer);
 

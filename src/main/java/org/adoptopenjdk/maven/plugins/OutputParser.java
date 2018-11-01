@@ -29,13 +29,11 @@ public class OutputParser {
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.matches()) {
-//                    System.out.println("matches " + line + "\t" + matcher.group(1) + "\t" + matcher.group(2));
                     // collect module details later
                     details.add(new ModuleDetail(Integer.parseInt(matcher.group(1)), matcher.group(2)));
                     continue;
                 }
                 if (!line.equals(currentPackage)) {
-//                    System.out.println("!line " + line);
                     if (currentPackage != null) {
                         consumer.accept(currentPackage, details);
                     }
@@ -44,7 +42,6 @@ public class OutputParser {
                 }
             }
             if (currentPackage != null) {
-//                System.out.println("not null " + line);
                 consumer.accept(currentPackage, details);
             }
         }
