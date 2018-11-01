@@ -1,0 +1,14 @@
+- Split packages:
+org.adoptopenjdk.app
+     19  file:/org.adoptopenjdk.app.jar
+      5  file:/org.adoptopenjdk.core.jar
+org.adoptopenjdk.base
+     24  file:/org.adoptopenjdk.app.jar
+      1  file:/org.adoptopenjdk.util.jar
+      2  file:/main-artifact.jar
+org.adoptopenjdk.app.util
+     12  file:/org.adoptopenjdk.app.jar
+      1  file:/org.adoptopenjdk.util.jar
+org.adoptopenjdk.model
+     25  file:/org.adoptopenjdk.app.jar
+      3  file:/org.adoptopenjdk.model.jar
