@@ -14,7 +14,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import javax.tools.Tool;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +37,7 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
-    @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
+    @Parameter(defaultValue = "${localRepository}", readonly = true, required = true)
     protected ArtifactRepository localRepository;
 
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
@@ -64,8 +67,24 @@ public class JsplitpkgscanMojo extends AbstractMojo {
 
         getLog().debug("Artifacts being processed: " + artifactJars);
 
-        //todo: parse output to create errors
-        tool.run(System.in, System.out, System.err, artifactJars.toArray(new String[0]));
+        ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        tool.run(in, out, err, artifactJars.toArray(new String[0]));
+
+        OutputParser parser = new OutputParser(this::onPackage);
+        try {
+            parser.parse(out.toByteArray());
+        } catch (IOException parseException) {
+            getLog().error("Unable to parse tool output", parseException);
+        }
+    }
+
+    private void onPackage(String packageName, Set<ModuleDetail> moduleDetails) {
+        if (moduleDetails.size() > 1) {
+            getLog().warn("Split package '" + packageName + "' found: " + moduleDetails);
+        }
     }
 
     private void collectArtifacts(Consumer<Artifact> artifactConsumer, Predicate<Artifact> filterPredicate) {
@@ -83,13 +102,13 @@ public class JsplitpkgscanMojo extends AbstractMojo {
                 .forEach(artifactConsumer);
     }
 
-    private static Artifact createDefaultArtifact(Dependency dep) {
-        return new DefaultArtifact(dep.getGroupId(),
-                dep.getArtifactId(),
-                dep.getVersion(),
-                dep.getScope(),
-                dep.getType(),
-                dep.getClassifier(),
-                new DefaultArtifactHandler(dep.getType()));
+    private static Artifact createDefaultArtifact(Dependency dependency) {
+        return new DefaultArtifact(dependency.getGroupId(),
+                dependency.getArtifactId(),
+                dependency.getVersion(),
+                dependency.getScope(),
+                dependency.getType(),
+                dependency.getClassifier(),
+                new DefaultArtifactHandler(dependency.getType()));
     }
 }
