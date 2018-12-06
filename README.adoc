@@ -1,0 +1,12 @@
+= OpenJDK split package scanner plugin for Maven
+Patrick Reinhart <https://github.com/reinhapa[@reinhapa]>
+:project-full-path: AdoptOpenJDK/jsplitpkgscan-maven-plugin
+:github-branch: master
+:jdk-version: 11
+:jdk-url: https://jdk.java.net/{jdk-version}
+:adoptopenjdk-url: https://adoptopenjdk.net
+
+image:https://img.shields.io/badge/license-GPL2-blue.svg["GNU General Public License, version 2", link="https://github.com/{project-full-path}/blob/{github-branch}/LICENSE"]
+image:https://img.shields.io/badge/Java-{jdk-version}-blue.svg["Supported Versions", link="https://travis-ci.org/{project-full-path}"]
+image:https://img.shields.io/travis/{project-full-path}/{github-branch}.svg["Build Status", link="https://travis-ci.org/{project-full-path}"]
+
