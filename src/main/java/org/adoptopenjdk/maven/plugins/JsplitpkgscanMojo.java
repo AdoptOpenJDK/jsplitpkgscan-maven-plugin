@@ -4,7 +4,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -31,7 +29,7 @@ import java.util.function.Predicate;
  * <p>
  * TODO Runs jsplitpkgscan for all artifacts
  */
-@Mojo(name = "jsplitpkgscan", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = "jsplitpkgscan", defaultPhase = LifecyclePhase.PACKAGE)
 public class JsplitpkgscanMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
@@ -58,6 +56,11 @@ public class JsplitpkgscanMojo extends AbstractMojo {
 
     void runJsplitpkgscan(Tool tool) {
         Set<String> checkedScopes = Set.of("compile", "runtime");
+        getLog().debug("project: " + project);
+        getLog().debug("localRepository: " + localRepository);
+        getLog().debug("outputDirectory: " + outputDirectory);
+        getLog().debug("artifact: " + project.getArtifact());
+        getLog().debug("artifact file: " + project.getArtifact().getFile());
 
         //todo: add filter possibility to only include certain scopes
         Predicate<Artifact> filterPredicate = artifact -> checkedScopes.contains(artifact.getScope());
@@ -71,13 +74,16 @@ public class JsplitpkgscanMojo extends AbstractMojo {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
 
+        getLog().info("Processing " + artifactJars.size()  + " artifacts...");
         tool.run(in, out, err, artifactJars.toArray(new String[0]));
 
-        OutputParser parser = new OutputParser(this::onPackage);
         try {
+            OutputParser parser = new OutputParser(this::onPackage);
             parser.parse(out.toByteArray());
         } catch (IOException parseException) {
             getLog().error("Unable to parse tool output", parseException);
+        } finally {
+            getLog().info("jsplitpkgscan finished.");
         }
     }
 
