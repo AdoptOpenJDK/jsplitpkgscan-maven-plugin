@@ -1,6 +1,5 @@
 package org.adoptopenjdk.maven.plugins;
 
-import java.text.ChoiceFormat;
 import java.text.MessageFormat;
 
 class ModuleDetail {
