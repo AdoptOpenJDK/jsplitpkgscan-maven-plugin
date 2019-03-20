@@ -44,12 +44,24 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
     }
 
+    public void testToolInvocation_with_project_artifact_only_and_dependencies_runtime_only() {
+        List<Dependency> dependencies = jsplitpkgscanMojo.project.getDependencies();
+        dependencies.add(createDependency("compile"));
+        dependencies.add(createDependency("runtime"));
+        dependencies.add(createDependency("test"));
+
+        jsplitpkgscanMojo.runJsplitpkgscan(tool);
+
+        verify(tool).run(any(), any(), any(), endsWith("main-artifact.jar"), endsWith("runtime-lib-1.0.0.jar"));
+    }
+
     public void testToolInvocation_with_project_artifact_only_and_dependencies() {
         List<Dependency> dependencies = jsplitpkgscanMojo.project.getDependencies();
         dependencies.add(createDependency("compile"));
         dependencies.add(createDependency("runtime"));
         dependencies.add(createDependency("test"));
 
+        jsplitpkgscanMojo.scopes = null;
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
 
         verify(tool).run(any(), any(), any(), endsWith("main-artifact.jar"), endsWith("compile-lib-1.0.0.jar"), endsWith("runtime-lib-1.0.0.jar"));
@@ -60,6 +72,7 @@ public class JsplitpkgscanMojoTest extends AbstractMojoTestCase {
         artifacts.add(createArtifact("additional-one", "jar"));
         artifacts.add(createArtifact("additional-two", "jar"));
 
+        jsplitpkgscanMojo.scopes = Set.of();
         jsplitpkgscanMojo.runJsplitpkgscan(tool);
 
         verify(tool).run(any(), any(), any(), endsWith("main-artifact.jar"), endsWith("additional-one.jar"), endsWith("additional-two.jar"));
