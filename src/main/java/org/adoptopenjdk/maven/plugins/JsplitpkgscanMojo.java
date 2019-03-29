@@ -7,6 +7,7 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -33,13 +34,16 @@ import java.util.function.Predicate;
 public class JsplitpkgscanMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    protected MavenProject project;
+    MavenProject project;
 
     @Parameter(defaultValue = "${localRepository}", readonly = true, required = true)
-    protected ArtifactRepository localRepository;
+    ArtifactRepository localRepository;
 
     @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
-    private File outputDirectory;
+    File outputDirectory;
+
+    @Parameter(property = "scopes")
+    Set<String> scopes;
 
     /**
      * Execute jsplitpgkscan tool for the projects artifact against all it's dependencies.
@@ -55,35 +59,39 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     }
 
     void runJsplitpkgscan(Tool tool) {
-        Set<String> checkedScopes = Set.of("compile", "runtime");
-        getLog().debug("project: " + project);
-        getLog().debug("localRepository: " + localRepository);
-        getLog().debug("outputDirectory: " + outputDirectory);
-        getLog().debug("artifact: " + project.getArtifact());
-        getLog().debug("artifact file: " + project.getArtifact().getFile());
+        Log log = getLog();
+        if (scopes == null || scopes.isEmpty()) {
+            log.debug("Using default scopes");
+            scopes = Set.of("compile", "runtime");
+        }
+        log.debug("project: " + project);
+        log.debug("localRepository: " + localRepository);
+        log.debug("outputDirectory: " + outputDirectory);
+        log.debug("scopes: " + scopes);
+        log.debug("artifact: " + project.getArtifact());
+        log.debug("artifact file: " + project.getArtifact().getFile());
 
-        //todo: add filter possibility to only include certain scopes
-        Predicate<Artifact> filterPredicate = artifact -> checkedScopes.contains(artifact.getScope());
+        Predicate<Artifact> filterPredicate = artifact -> scopes.contains(artifact.getScope());
 
         List<String> artifactJars = new ArrayList<>();
         collectArtifacts(artifact -> artifactJars.add(artifact.getFile().getAbsolutePath()), filterPredicate);
 
-        getLog().debug("Artifacts being processed: " + artifactJars);
+        log.debug("Artifacts being processed: " + artifactJars);
 
         ByteArrayInputStream in = new ByteArrayInputStream(new byte[0]);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
 
-        getLog().info("Processing " + artifactJars.size()  + " artifacts...");
+        log.info("Processing " + artifactJars.size()  + " artifacts...");
         tool.run(in, out, err, artifactJars.toArray(new String[0]));
 
         try {
             OutputParser parser = new OutputParser(this::onPackage);
             parser.parse(out.toByteArray());
         } catch (IOException parseException) {
-            getLog().error("Unable to parse tool output", parseException);
+            log.error("Unable to parse tool output", parseException);
         } finally {
-            getLog().info("jsplitpkgscan finished.");
+            log.info("jsplitpkgscan finished.");
         }
     }
 
