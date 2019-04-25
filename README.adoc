@@ -1,12 +1,14 @@
 = OpenJDK split package scanner plugin for Maven
 Patrick Reinhart <https://github.com/reinhapa[@reinhapa]>
-:project-full-path: AdoptOpenJDK/jsplitpkgscan-maven-plugin
+:project-name: jsplitpkgscan-maven-plugin
+:group-name: org.adoptopenjdk.maven.plugins
+:project-full-path: AdoptOpenJDK/{project-name}
 :github-branch: master
-:jdk-version: 11
+:jdk-version: 12
 :jdk-url: https://jdk.java.net/{jdk-version}
 :adoptopenjdk-url: https://adoptopenjdk.net
 
-image:https://img.shields.io/badge/license-GPL2-blue.svg["GNU General Public License, version 2", link="https://github.com/{project-full-path}/blob/{github-branch}/LICENSE"]
+image:https://img.shields.io/badge/license-Apache_2-blue.svg["Apache License, version 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
 image:https://img.shields.io/badge/Java-{jdk-version}-blue.svg["Supported Versions", link="https://travis-ci.org/{project-full-path}"]
 image:https://img.shields.io/travis/{project-full-path}/{github-branch}.svg["Build Status", link="https://travis-ci.org/{project-full-path}"]
-
+image:https://img.shields.io/maven-central/v/{group-name}/{project-name}.svg?label=Maven%20Central["Maven Central", link="https://search.maven.org/search?q=g:%22{group-name}%22%20AND%20a:%22{project-name}%22"]
