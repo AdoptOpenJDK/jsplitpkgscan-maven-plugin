@@ -5,25 +5,62 @@
 
     <groupId>org.adoptopenjdk.maven.plugins</groupId>
     <artifactId>jsplitpkgscan-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>maven-plugin</packaging>
 
     <name>jsplitpkgscan Maven Plugin</name>
-
+    <description>OpenJDK split package scanner plugin for Maven</description>
     <url>http://www.github.com/AdoptOpenJDK/jsplitpkgscan-maven-plugin</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Patrick Reinhart</name>
+            <email>patrick@reini.net</email>
+        </developer>
+        <developer>
+            <name>Martijn Verburg</name>
+            <email>martijnverburg@gmail.com</email>
+        </developer>
+        <developer>
+            <name>Ingo Weiss</name>
+            <email>ingo@redhat.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/AdoptOpenJDK/jsplitpkgscan-maven-plugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com:AdoptOpenJDK/jsplitpkgscan-maven-plugin.git</developerConnection>
+        <url>http://github.com/AdoptOpenJDK/jsplitpkgscan-maven-plugin/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mavenVersion>3.6.0</mavenVersion>
-        <junitVersion>5.5.0</junitVersion>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.testSource>11</maven.compiler.testSource>
-        <maven.compiler.testTarget>11</maven.compiler.testTarget>
+        <maven.compiler.source>12</maven.compiler.source>
+        <maven.compiler.target>12</maven.compiler.target>
+        <maven.compiler.testSource>12</maven.compiler.testSource>
+        <maven.compiler.testTarget>12</maven.compiler.testTarget>
     </properties>
 
     <prerequisites>
-        <maven>${mavenVersion}</maven>
+        <maven>3.6.1</maven>
     </prerequisites>
 
     <dependencies>
@@ -35,28 +72,28 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-compat</artifactId>
-            <version>${mavenVersion}</version>
+            <version>3.6.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>${mavenVersion}</version>
+            <version>3.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>${mavenVersion}</version>
+            <version>3.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>${mavenVersion}</version>
+            <version>3.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>${mavenVersion}</version>
+            <version>3.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -79,25 +116,25 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junitVersion}</version>
+            <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junitVersion}</version>
+            <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>${junitVersion}</version>
+            <version>5.5.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.0.0</version>
+             <version>3.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -112,11 +149,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
+                <version>3.8.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -136,7 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>${mavenVersion}</version>
+                <version>3.6.0</version>
                 <configuration>
                     <goalPrefix>jsplitpkgscan</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -157,9 +190,35 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>5.1.0</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
             <id>run-its</id>
