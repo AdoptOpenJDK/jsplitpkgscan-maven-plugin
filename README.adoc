@@ -10,5 +10,5 @@ Patrick Reinhart <https://github.com/reinhapa[@reinhapa]>
 
 image:https://img.shields.io/badge/license-Apache_2-blue.svg["Apache License, version 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
 image:https://img.shields.io/badge/Java-{jdk-version}-blue.svg["Supported Versions", link="https://travis-ci.org/{project-full-path}"]
-image:https://img.shields.io/travis/{project-full-path}/{github-branch}.svg["Build Status", link="https://travis-ci.org/{project-full-path}"]
+image:https://github.com/{project-full-path}/actions/workflows/build.yml/badge.svg?branch={github-branch}["Build Status", link="https://github.com/{project-full-path}/actions/workflows/build.yml"]
 image:https://img.shields.io/maven-central/v/{group-name}/{project-name}.svg?label=Maven%20Central["Maven Central", link="https://search.maven.org/search?q=g:%22{group-name}%22%20AND%20a:%22{project-name}%22"]
