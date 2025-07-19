@@ -21,11 +21,22 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.jdk }}
+    - name: Install Maven
+      run: |
+        apt-get update
+        apt-get install -y maven
     - name: Cache Maven packages
       uses: actions/cache@v4.2.3
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
+    - name: Cache OWASP NVD data
+      uses: actions/cache@v4.2.3
+      with:
+        path: ~/.m2/repository/org/owasp/dependency-check-data
+        key: owasp-nvd-cache-${{ runner.os }}
+        restore-keys: |
+            owasp-nvd-cache-
     - name: Build with Maven
       run: mvn -B -U verify
