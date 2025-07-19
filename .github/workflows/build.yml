@@ -23,8 +23,8 @@ jobs:
         java-version: ${{ matrix.jdk }}
     - name: Install Maven
       run: |
-        apt-get update
-        apt-get install -y maven
+        sudo apt-get update
+        sudo apt-get install -y maven
     - name: Cache Maven packages
       uses: actions/cache@v4.2.3
       with:
