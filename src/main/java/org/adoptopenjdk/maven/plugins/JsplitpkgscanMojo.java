@@ -48,7 +48,7 @@ public class JsplitpkgscanMojo extends AbstractMojo {
     /**
      * Execute jsplitpgkscan tool for the projects artifact against all it's dependencies.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException General exception thrown if the mojo execution fails.
      */
     @Override
     public void execute() throws MojoExecutionException {
