@@ -4,7 +4,7 @@ Patrick Reinhart <https://github.com/reinhapa[@reinhapa]>
 :group-name: org.adoptopenjdk.maven.plugins
 :project-full-path: AdoptOpenJDK/{project-name}
 :github-branch: master
-:jdk-version: 12
+:jdk-version: 11
 :jdk-url: https://jdk.java.net/{jdk-version}
 :adoptopenjdk-url: https://adoptopenjdk.net
 
